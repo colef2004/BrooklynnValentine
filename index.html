@@ -193,6 +193,42 @@
       opacity:.8;
       filter: drop-shadow(0 8px 12px rgba(0,0,0,.08));
     }
+
+    /* jumpscare overlay */
+    .jumpscare{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:#0a0a0a;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      pointer-events:none;
+      transition: none;
+    }
+    .jumpscare.on{
+      opacity:1;
+      pointer-events:auto;
+      animation: jumpscareFlash 0.15s ease-out;
+    }
+    @keyframes jumpscareFlash{
+      0%{ background:#1a0a0a; }
+      30%{ background:#2a1515; }
+      100%{ background:#0a0a0a; }
+    }
+    .jumpscare .sad-man{
+      font-size: clamp(120px, 35vw, 280px);
+      line-height:1;
+      filter: drop-shadow(0 0 40px rgba(255,100,100,.3));
+      animation: jumpscarePop 0.25s ease-out;
+    }
+    @keyframes jumpscarePop{
+      0%{ transform: scale(0.3); opacity:0; }
+      40%{ transform: scale(1.35); opacity:1; }
+      70%{ transform: scale(0.95); }
+      100%{ transform: scale(1); opacity:1; }
+    }
   </style>
 </head>
 <body>
@@ -225,6 +261,10 @@
 
   <canvas id="rain"></canvas>
   <div class="sad-overlay" id="sadOverlay"></div>
+
+  <div class="jumpscare" id="jumpscare" aria-hidden="true">
+    <div class="sad-man">😢</div>
+  </div>
 
   <div class="wrap">
     <div class="card" id="card">
@@ -510,6 +550,7 @@
     const sadOverlay = document.getElementById('sadOverlay');
     const modal = document.getElementById('modal');
     const resetBtn = document.getElementById('resetBtn');
+    const jumpscareEl = document.getElementById('jumpscare');
 
     let sadMode = false;
 
@@ -540,6 +581,8 @@
     // Clicking No: playful “are you sure?” and keep sad mode
     noBtn.addEventListener('click', () => {
       enterSadMode();
+      jumpscareEl.classList.add('on');
+      setTimeout(() => jumpscareEl.classList.remove('on'), 1800);
       noBtn.textContent = "…Really? 😭";
       setTimeout(() => (noBtn.textContent = "No 😶"), 1400);
     });
